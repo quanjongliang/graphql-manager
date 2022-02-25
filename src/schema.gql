@@ -1,0 +1,62 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Department {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  isDeleted: Boolean!
+  name: String!
+  description: String!
+  employees: [Employee!]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Employee {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  isDeleted: Boolean!
+  firstName: String!
+  lastName: String!
+  dateOfBirth: DateTime
+  title: String
+  department: Department
+}
+
+type Query {
+  findAllActiveEmployee: [Employee!]!
+  findAllActiveDepartment: [Department!]!
+  department(id: String!): Department!
+}
+
+type Mutation {
+  createEmployee(createEmployeeInput: CreateEmployeeInput!): Employee!
+  oneCreateDepartment(createDepartmentInput: CreateDepartmentInput!): Department!
+  updateDepartment(updateDepartmentInput: UpdateDepartmentInput!): Department!
+  removeDepartment(id: Int!): Department!
+}
+
+input CreateEmployeeInput {
+  firstName: String!
+  lastName: String!
+  departmentName: String!
+  title: String!
+  dateOfBirth: DateTime
+}
+
+input CreateDepartmentInput {
+  name: String!
+  description: String!
+}
+
+input UpdateDepartmentInput {
+  name: String
+  description: String
+  id: String!
+}
