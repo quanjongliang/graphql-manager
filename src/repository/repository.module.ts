@@ -1,23 +1,13 @@
-import { Department } from '@/department';
-import { Employee } from '@/employee';
+import { Department, Employee } from '@/entities';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DepartmentRepository } from './department';
-import { EmployeeRepository } from './employee';
+import { DepartmentRepository, EmployeeRepository } from '.';
 
 const LIST_ENTITIES = [Department, Employee];
 
-const LIST_REPOSITORIES = [DepartmentRepository, EmployeeRepository];
-
+const LIST_REPOSITORY = [DepartmentRepository, EmployeeRepository];
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      Department,
-      Employee,
-      DepartmentRepository,
-      EmployeeRepository,
-    ]),
-  ],
+  imports: [TypeOrmModule.forFeature([...LIST_ENTITIES, ...LIST_REPOSITORY])],
   exports: [TypeOrmModule],
 })
 export class RepositoryModule {}

@@ -1,11 +1,10 @@
-import { RELATION_WITH } from '@/core';
-import { Department } from '@/department';
-import { DepartmentRepository, EmployeeRepository } from '@/repository';
+import { Department } from '@/entities/department.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateEmployeeInput } from '../dto';
-import { Employee, EMPLOYEE_RELATION } from '../employee.entity';
+import { Employee, EMPLOYEE_RELATION } from '../../entities/employee.entity';
+import { RELATION_WITH } from '@/entities';
 
 const RELATION = RELATION_WITH([EMPLOYEE_RELATION.DEPARTMENT]);
 const ALL_RELATION = RELATION_WITH(Object.values(EMPLOYEE_RELATION));
@@ -13,8 +12,10 @@ const ALL_RELATION = RELATION_WITH(Object.values(EMPLOYEE_RELATION));
 @Injectable()
 export class EmployeeService {
   constructor(
-    private employeeRepository: EmployeeRepository,
-    private departmentRepository: DepartmentRepository,
+    @InjectRepository(Employee)
+    private employeeRepository: Repository<Employee>,
+    @InjectRepository(Department)
+    private departmentRepository: Repository<Department>,
   ) {}
 
   async createEmployee(createEmployee: CreateEmployeeInput): Promise<Employee> {

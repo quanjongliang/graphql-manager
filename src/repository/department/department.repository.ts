@@ -1,4 +1,4 @@
-import { Department } from '@/department';
+import { Department } from '@/entities';
 import { EntityRepository, Repository } from 'typeorm';
 
 @EntityRepository(Department)

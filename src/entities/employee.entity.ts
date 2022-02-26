@@ -1,7 +1,7 @@
-import { Department } from '@/department';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { BaseEntity } from '../core';
+import { BaseEntity } from './base.entity';
+import { Department } from './department.entity';
 
 @Entity()
 @ObjectType()

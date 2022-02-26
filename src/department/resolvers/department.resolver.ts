@@ -1,24 +1,14 @@
-import {
-  Resolver,
-  Query,
-  Mutation,
-  Args,
-  Int,
-  ResolveField,
-  Parent,
-} from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { DepartmentService } from '../services/';
-import { Department } from '../department.entity';
 import { CreateDepartmentInput } from '../dto/create-department.input';
 import { UpdateDepartmentInput } from '../dto/update-department.input';
-import { Employee, EmployeeService } from '@/employee';
+import { Department } from '@/entities';
+// import { Employee, EmployeeService } from '@/employee';
 
 @Resolver(() => Department)
 export class DepartmentResolver {
   constructor(
-    private readonly departmentService: DepartmentService,
-
-    private employeeService: EmployeeService,
+    private readonly departmentService: DepartmentService, // private employeeService: EmployeeService,
   ) {}
 
   @Mutation(() => Department, { name: 'oneCreateDepartment' })
@@ -38,11 +28,11 @@ export class DepartmentResolver {
     return this.departmentService.findOne(id);
   }
 
-  @ResolveField('employees', (returns) => [Employee])
-  async getEmployees(@Parent() department: Department) {
-    const { id } = department;
-    return this.employeeService.findAllActiveEmployeeByDepartment(id);
-  }
+  // @ResolveField('employees', (returns) => [Employee])
+  // async getEmployees(@Parent() department: Department) {
+  //   const { id } = department;
+  //   return this.employeeService.findAllActiveEmployeeByDepartment(id);
+  // }
 
   @Mutation(() => Department)
   updateDepartment(
