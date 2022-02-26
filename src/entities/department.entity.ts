@@ -11,6 +11,10 @@ export class Department extends BaseEntity {
   @Column()
   name: string;
 
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  code: string;
+
   @Field()
   @Column()
   description: string;
@@ -18,6 +22,11 @@ export class Department extends BaseEntity {
   @OneToMany(() => Employee, (employee) => employee.department)
   @Field((type) => [Employee], { nullable: true })
   employees: Employee[];
+
+  @BeforeInsert()
+  generateCode() {
+    this.code = generateCodeForEntity(EntityType.DEPARTMENT, this.name);
+  }
 
   @AfterLoad()
   changeDescription() {

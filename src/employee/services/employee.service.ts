@@ -1,10 +1,9 @@
-import { Department } from '@/entities/department.entity';
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateEmployeeInput } from '../dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { CreateEmployeeInput, UpdateEmployeeInput } from '../dto';
 import { Employee, EMPLOYEE_RELATION } from '../../entities/employee.entity';
 import { RELATION_WITH } from '@/entities';
+import { DepartmentRepository, EmployeeRepository } from '@/repository';
+import { EntityType, ERROR_MESSAGE, generateCodeForEntity } from '@/core';
 
 const RELATION = RELATION_WITH([EMPLOYEE_RELATION.DEPARTMENT]);
 const ALL_RELATION = RELATION_WITH(Object.values(EMPLOYEE_RELATION));
@@ -12,10 +11,8 @@ const ALL_RELATION = RELATION_WITH(Object.values(EMPLOYEE_RELATION));
 @Injectable()
 export class EmployeeService {
   constructor(
-    @InjectRepository(Employee)
-    private employeeRepository: Repository<Employee>,
-    @InjectRepository(Department)
-    private departmentRepository: Repository<Department>,
+    private employeeRepository: EmployeeRepository,
+    private departmentRepository: DepartmentRepository,
   ) {}
 
   async createEmployee(createEmployee: CreateEmployeeInput): Promise<Employee> {
@@ -44,5 +41,29 @@ export class EmployeeService {
         isDeleted: false,
       },
     });
+  }
+
+  async updateEmployee(
+    updateEmployeeInput: UpdateEmployeeInput,
+  ): Promise<Employee> {
+    const { id, departmentName, title } = updateEmployeeInput;
+    const employee = await this.employeeRepository.findOne({
+      where: { isDeleted: false, id },
+      ...RELATION,
+    });
+    if (!employee)
+      throw new BadRequestException(ERROR_MESSAGE.EMPLOYEE.NOT_FOUND);
+    if (departmentName) {
+      // const department = await this.departmentRepository.findDepartmentByCode(
+      //   generateCodeForEntity(EntityType.DEPARTMENT, departmentName),
+      // );
+      const department = await this.departmentRepository.findDepartmentByName(
+        departmentName,
+      );
+      if (!department) {
+        throw new BadRequestException(ERROR_MESSAGE.DEPARTMENT.NOT_FOUND);
+      }
+    }
+    return employee;
   }
 }

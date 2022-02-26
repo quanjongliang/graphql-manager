@@ -1,7 +1,6 @@
 import { DEPARTMENT_RELATION, Department, RELATION_WITH } from '@/entities';
+import { DepartmentRepository } from '@/repository';
 import { ConflictException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { CreateDepartmentInput } from '../dto/create-department.input';
 
 const RELATION = RELATION_WITH([DEPARTMENT_RELATION.EMPLOYEE]);
@@ -10,10 +9,7 @@ const ALL_RELATION = RELATION_WITH(allRelations);
 
 @Injectable()
 export class DepartmentService {
-  constructor(
-    @InjectRepository(Department)
-    private departmentRepository: Repository<Department>,
-  ) {}
+  constructor(private departmentRepository: DepartmentRepository) {}
 
   async create(
     createDepartmentInput: CreateDepartmentInput,
@@ -23,8 +19,10 @@ export class DepartmentService {
       isDeleted: false,
     });
     if (department) throw new ConflictException('This Department existed!');
-
-    return this.departmentRepository.save(createDepartmentInput);
+    const newDepartment = this.departmentRepository.create(
+      createDepartmentInput,
+    );
+    return this.departmentRepository.save(newDepartment);
   }
 
   async findAllActive(): Promise<Department[]> {

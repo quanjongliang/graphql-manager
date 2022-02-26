@@ -25,6 +25,7 @@ type Department {
   updatedAt: DateTime!
   isDeleted: Boolean!
   name: String!
+  code: String
   description: String!
   employees: [Employee!]
 }
@@ -37,6 +38,7 @@ type Query {
 
 type Mutation {
   createEmployee(createEmployeeInput: CreateEmployeeInput!): Employee!
+  updateEmployee(updateEmployeeInput: UpdateEmployeeInput!): Employee!
   oneCreateDepartment(createDepartmentInput: CreateDepartmentInput!): Department!
   updateDepartment(updateDepartmentInput: UpdateDepartmentInput!): Department!
   removeDepartment(id: Int!): Department!
@@ -48,6 +50,12 @@ input CreateEmployeeInput {
   departmentName: String!
   title: String!
   dateOfBirth: DateTime
+}
+
+input UpdateEmployeeInput {
+  id: String!
+  departmentName: String
+  title: String
 }
 
 input CreateDepartmentInput {
