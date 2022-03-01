@@ -1,15 +1,15 @@
+import { Department, Employee } from '@/entities';
 import {
-  Resolver,
-  Query,
-  Mutation,
   Args,
-  Int,
   Directive,
+  Int,
+  Mutation,
+  Query,
+  Resolver,
 } from '@nestjs/graphql';
-import { DepartmentService } from '../services/';
 import { CreateDepartmentInput } from '../dto/create-department.input';
 import { UpdateDepartmentInput } from '../dto/update-department.input';
-import { Department } from '@/entities';
+import { DepartmentService } from '../services/';
 // import { Employee, EmployeeService } from '@/employee';
 
 @Resolver(() => Department)
@@ -29,6 +29,7 @@ export class DepartmentResolver {
   findAllActiveDepartment() {
     return this.departmentService.findAllActive();
   }
+
   @Directive(
     '@deprecated(reason: "This query will be removed in the next version")',
   )
@@ -42,7 +43,6 @@ export class DepartmentResolver {
   //   const { id } = department;
   //   return this.employeeService.findAllActiveEmployeeByDepartment(id);
   // }
-
   @Mutation(() => Department)
   updateDepartment(
     @Args('updateDepartmentInput') updateDepartmentInput: UpdateDepartmentInput,

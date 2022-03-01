@@ -32,6 +32,7 @@ type Department {
 
 type Query {
   findAllActiveEmployee: [Employee!]!
+  findEmployeesByName(name: String!): [Employee!]!
   findAllActiveDepartment: [Department!]!
   department(id: String!): Department!
 }

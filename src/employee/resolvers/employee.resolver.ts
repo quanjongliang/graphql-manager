@@ -2,7 +2,6 @@ import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { EmployeeService } from '../services';
 import { CreateEmployeeInput, UpdateEmployeeInput } from '../dto';
 import { Employee } from '@/entities';
-
 @Resolver(() => Employee)
 export class EmployeeResolver {
   constructor(private readonly employeeService: EmployeeService) {}
@@ -17,6 +16,11 @@ export class EmployeeResolver {
   @Query(() => [Employee])
   findAllActiveEmployee() {
     return this.employeeService.findAllActiveEmployee();
+  }
+
+  @Query(() => [Employee], { name: 'findEmployeesByName' })
+  findEmployeesByName(@Args('name', { type: () => String }) name: string) {
+    return this.employeeService.findEmployeesByName(name);
   }
 
   @Mutation(() => Employee)

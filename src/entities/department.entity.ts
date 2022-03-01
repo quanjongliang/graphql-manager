@@ -1,5 +1,5 @@
 import { EntityType, generateCodeForEntity } from '@/core';
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { AfterLoad, BeforeInsert, Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { Employee } from './employee.entity';

@@ -1,4 +1,4 @@
-import { DEPARTMENT_RELATION, Department, RELATION_WITH } from '@/entities';
+import { Department, DEPARTMENT_RELATION, RELATION_WITH } from '@/entities';
 import { DepartmentRepository } from '@/repository';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateDepartmentInput } from '../dto/create-department.input';
