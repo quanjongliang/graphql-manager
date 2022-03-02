@@ -4,7 +4,9 @@ import {
   Directive,
   Int,
   Mutation,
+  Parent,
   Query,
+  ResolveField,
   Resolver,
 } from '@nestjs/graphql';
 import { CreateDepartmentInput } from '../dto/create-department.input';
@@ -38,11 +40,12 @@ export class DepartmentResolver {
     return this.departmentService.findOne(id);
   }
 
-  // @ResolveField('employees', (returns) => [Employee])
-  // async getEmployees(@Parent() department: Department) {
-  //   const { id } = department;
-  //   return this.employeeService.findAllActiveEmployeeByDepartment(id);
-  // }
+  @ResolveField(() => [Employee])
+  async employeeInformation(@Parent() department: Department) {
+    const { id } = department;
+    return this.departmentService.findAllActiveEmployeeByDepartment(id);
+  }
+
   @Mutation(() => Department)
   updateDepartment(
     @Args('updateDepartmentInput') updateDepartmentInput: UpdateDepartmentInput,

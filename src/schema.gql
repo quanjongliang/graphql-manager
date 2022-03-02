@@ -12,6 +12,7 @@ type Employee {
   dateOfBirth: DateTime
   title: String
   department: Department
+  departmentInformation: Department!
 }
 
 """
@@ -28,10 +29,12 @@ type Department {
   code: String
   description: String!
   employees: [Employee!]
+  employeeInformation: [Employee!]!
 }
 
 type Query {
   findAllActiveEmployee: [Employee!]!
+  findAllActiveEmployeeByDepartment(depName: String!): [Employee!]!
   findEmployeesByName(name: String!): [Employee!]!
   findAllActiveDepartment: [Department!]!
   department(id: String!): Department!
@@ -40,6 +43,7 @@ type Query {
 type Mutation {
   createEmployee(createEmployeeInput: CreateEmployeeInput!): Employee!
   updateEmployee(updateEmployeeInput: UpdateEmployeeInput!): Employee!
+  deleteEmployee(id: String!): Employee!
   oneCreateDepartment(createDepartmentInput: CreateDepartmentInput!): Department!
   updateDepartment(updateDepartmentInput: UpdateDepartmentInput!): Department!
   removeDepartment(id: Int!): Department!
@@ -57,6 +61,8 @@ input UpdateEmployeeInput {
   id: String!
   departmentName: String
   title: String
+  firstName: String
+  lastName: String
 }
 
 input CreateDepartmentInput {

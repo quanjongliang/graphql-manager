@@ -1,5 +1,10 @@
-import { Department, DEPARTMENT_RELATION, RELATION_WITH } from '@/entities';
-import { DepartmentRepository } from '@/repository';
+import {
+  Department,
+  DEPARTMENT_RELATION,
+  Employee,
+  RELATION_WITH,
+} from '@/entities';
+import { DepartmentRepository, EmployeeRepository } from '@/repository';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateDepartmentInput } from '../dto/create-department.input';
 
@@ -9,7 +14,11 @@ const ALL_RELATION = RELATION_WITH(allRelations);
 
 @Injectable()
 export class DepartmentService {
-  constructor(private departmentRepository: DepartmentRepository) {}
+  constructor(
+    private departmentRepository: DepartmentRepository,
+
+    private employeeRepository: EmployeeRepository,
+  ) {}
 
   async create(
     createDepartmentInput: CreateDepartmentInput,
@@ -36,6 +45,13 @@ export class DepartmentService {
     return this.departmentRepository.findOne({
       ...RELATION,
       where: { id, isDeleted: false },
+    });
+  }
+
+  findAllActiveEmployeeByDepartment(id: string): Promise<Employee[]> {
+    return this.employeeRepository.find({
+      isDeleted: false,
+      department: { id },
     });
   }
 }

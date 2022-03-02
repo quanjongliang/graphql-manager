@@ -1,7 +1,11 @@
 import { ERROR_MESSAGE } from '@/core';
-import { RELATION_WITH } from '@/entities';
+import { Department, RELATION_WITH } from '@/entities';
 import { DepartmentRepository, EmployeeRepository } from '@/repository';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Employee, EMPLOYEE_RELATION } from '../../entities/employee.entity';
 import { CreateEmployeeInput, UpdateEmployeeInput } from '../dto';
 const RELATION = RELATION_WITH([EMPLOYEE_RELATION.DEPARTMENT]);
@@ -39,13 +43,16 @@ export class EmployeeService {
       where: {
         isDeleted: false,
       },
+      order: {
+        createdAt: 'ASC',
+      },
     });
   }
 
   async updateEmployee(
     updateEmployeeInput: UpdateEmployeeInput,
   ): Promise<Employee> {
-    const { id, departmentName, title } = updateEmployeeInput;
+    const { id, departmentName } = updateEmployeeInput;
     const employee = await this.employeeRepository.findOne({
       where: { isDeleted: false, id },
       ...RELATION,
@@ -61,17 +68,51 @@ export class EmployeeService {
       }
       employee.department = department;
     }
-
-    if (title) {
-      employee.title = title;
-    }
-    return this.employeeRepository.save(employee);
+    const updatedEmployee = { ...employee, ...updateEmployeeInput };
+    return this.employeeRepository.save(updatedEmployee);
   }
 
-  async findEmployeesByName(name: string): Promise<Employee[]> {
+  async findEmployeesByName(name?: string): Promise<Employee[]> {
+    if (!name) {
+      return this.findAllActiveEmployee();
+    }
     const employee = await this.employeeRepository.findEmployeesByName(name);
-    if (employee.length === 0)
-      throw new BadRequestException(ERROR_MESSAGE.EMPLOYEE.NOT_FOUND);
+    if (employee.length === 0) {
+      return [];
+    }
     return employee;
+  }
+
+  async deleteEmployee(id: string): Promise<Employee> {
+    const employee = await this.employeeRepository.findOne({
+      isDeleted: false,
+      id,
+    });
+    if (!employee)
+      throw new NotFoundException(ERROR_MESSAGE.EMPLOYEE.NOT_FOUND);
+
+    return this.employeeRepository.save({ ...employee, isDeleted: true });
+  }
+
+  findDepartmentOfEmployee(id: string): Promise<Department> {
+    return this.departmentRepository.findOne({ isDeleted: false, id });
+  }
+
+  async findAllActiveEmployeeByDepartmentName(
+    name?: string,
+  ): Promise<Employee[]> {
+    if (!name) {
+      return this.employeeRepository.find({ isDeleted: false });
+    }
+    const department = await this.departmentRepository.findDepartmentByName(
+      name,
+    );
+    return this.employeeRepository.find({
+      where: {
+        isDeleted: false,
+        department,
+      },
+      relations: ['department'],
+    });
   }
 }
