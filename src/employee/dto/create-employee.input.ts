@@ -1,9 +1,11 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { IsString } from 'class-validator';
 
 @InputType()
 export class CreateEmployeeInput {
   @Field()
-  firstName: string;
+  @IsString()
+  firstName?: string;
   @Field()
   lastName: string;
   @Field()

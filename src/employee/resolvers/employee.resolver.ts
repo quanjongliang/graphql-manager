@@ -31,6 +31,7 @@ export class EmployeeResolver {
   findAllActiveEmployee() {
     return this.employeeService.findAllActiveEmployee();
   }
+
   @Query(() => [Employee])
   findAllActiveEmployeeByDepartment(@Args('depName') depName?: string) {
     return this.employeeService.findAllActiveEmployeeByDepartmentName(depName);
